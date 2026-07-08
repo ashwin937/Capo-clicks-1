@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0b0908;
+  color: #f3ecd9;
+}
+
+.rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a227, transparent);
+}
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #c9a227;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 2px;
+  cursor: pointer;
+  border: 1px solid #c9a227;
+  transition: all .2s;
+}
+
+.btn-solid {
+  background: #c9a227;
+  color: #171208;
+}
+.btn-solid:hover {
+  background: #e8cf7a;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #e8cf7a;
+}
+.btn-outline:hover {
+  background: rgba(201,162,39,0.1);
+}
+
+.card {
+  background: #161310;
+  border: 1px solid rgba(201,162,39,0.28);
+}
