@@ -63,6 +63,53 @@ Supabase schema (`supabase/schema.sql`) already has matching tables
 into the database and build an edit UI in `/admin` later — the data shapes
 already match.
 
+## Database backups (download + Telegram)
+
+From `/admin` you can:
+
+- **Download DB Backup** — instantly downloads a `.sql` file with `INSERT`
+  statements for every row in every table (frame_sizes, packages,
+  quote_services, orders, bookings, gallery_items). Data-only, not a schema
+  dump — restore onto a database that already has `supabase/schema.sql`
+  applied.
+- **Send Backup to Telegram Now** — sends that same file straight to a
+  Telegram chat via a bot, so you get an on-demand copy in your pocket.
+
+### One-time Telegram setup
+
+1. **Create the bot** — message [@BotFather](https://t.me/BotFather) on
+   Telegram, send `/newbot`, follow the prompts. It'll give you a token like
+   `123456789:AAExampleTokenxxxxxxxxxxxxxxxxxxxxx`. Put that in
+   `TELEGRAM_BOT_TOKEN`.
+2. **Get your chat ID** — send any message to your new bot first (bots can't
+   message you until you've messaged them), then open in a browser:
+   `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`. Find
+   `"chat":{"id":...}` in the response — that number is `TELEGRAM_CHAT_ID`.
+   (Works the same for a group chat: add the bot to the group, send a
+   message there, and read the group's chat id instead — group ids are
+   negative numbers.)
+3. **Set `CRON_SECRET`** — any long random string, e.g.
+   `openssl rand -hex 32`. This stops randoms from hitting the cron endpoint
+   directly.
+4. Add all three (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `CRON_SECRET`)
+   to your Vercel project's environment variables and redeploy.
+
+### Automatic periodic backups
+
+`vercel.json` defines a Vercel Cron Job that hits
+`/api/cron/telegram-backup` once a day at 2:30 AM IST and pushes the backup
+file to your Telegram chat automatically — no server or extra hosting
+needed, Vercel's own scheduler triggers it. Change the `schedule` field
+(standard cron syntax, in UTC) if you want a different time or frequency.
+Cron Jobs run automatically once the project is deployed on Vercel; they
+don't run in local dev.
+
+> Note: Vercel's free (Hobby) plan limits cron jobs to once a day. If you're
+> on Hobby and want more frequent backups, either upgrade to Pro or trigger
+> `/api/cron/telegram-backup` from a free external scheduler (e.g.
+> cron-job.org) that sends the same `Authorization: Bearer <CRON_SECRET>`
+> header.
+
 ## Deploying
 
 See the separate deployment guide for buying a domain, deploying to Vercel,

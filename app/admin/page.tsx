@@ -3,6 +3,7 @@ import { getSupabaseServiceClient, isSupabaseConfigured } from "@/lib/supabase";
 import { packages, frameSizes } from "@/lib/data";
 import { statusLabels } from "@/lib/data";
 import AdminEditor from "@/components/AdminEditor";
+import TelegramBackupButton from "@/components/TelegramBackupButton";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
 
 async function getOrders() {
@@ -23,7 +24,20 @@ export default async function AdminPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
-      <h1 className="font-display text-3xl mb-10">Admin Dashboard</h1>
+      <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
+        <h1 className="font-display text-3xl">Admin Dashboard</h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <a
+            href="/api/admin/backup"
+            download
+            className="btn btn-solid !text-xs !py-2"
+            title="Downloads a .sql file with INSERT statements for every table (data-only backup)"
+          >
+            Download DB Backup
+          </a>
+          <TelegramBackupButton />
+        </div>
+      </div>
 
       <div className="grid md:grid-cols-3 gap-5 mb-12">
         <div className="card p-6">
