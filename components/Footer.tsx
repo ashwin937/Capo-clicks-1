@@ -1,6 +1,7 @@
 export default function Footer() {
   const phone1 = process.env.NEXT_PUBLIC_PHONE_1 || "+919786686928";
   const phone2 = process.env.NEXT_PUBLIC_PHONE_2 || "+919345323179";
+  const email = process.env.NEXT_PUBLIC_EMAIL || "capoclicks@gmail.com";
   const instagram = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://www.instagram.com/_capo_clicks";
 
   return (
@@ -17,6 +18,7 @@ export default function Footer() {
             <h4 className="font-display text-goldLight text-sm tracking-wide mb-4">Contact</h4>
             <a href={`tel:${phone1}`} className="block text-sm text-muted hover:text-goldLight leading-8">{phone1}</a>
             <a href={`tel:${phone2}`} className="block text-sm text-muted hover:text-goldLight leading-8">{phone2}</a>
+            <a href={`mailto:${email}`} className="block text-sm text-muted hover:text-goldLight leading-8">{email}</a>
             <p className="text-sm text-muted leading-8">Coimbatore, Tamil Nadu</p>
           </div>
           <div>

@@ -11,11 +11,7 @@ export default function Nav() {
     <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur border-b border-line">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="18" stroke="#c9a227" strokeWidth="1.2" />
-            <circle cx="20" cy="20" r="6" stroke="#e8cf7a" strokeWidth="1.2" />
-            <path d="M20 2 L20 8 M20 32 L20 38 M2 20 L8 20 M32 20 L38 20" stroke="#c9a227" strokeWidth="1" />
-          </svg>
+          <img src="/logo.png" alt="Capo Clicks Photography logo" width={44} height={44} className="w-11 h-11 object-contain" />
           <div className="font-display font-bold text-lg tracking-wide text-goldLight leading-none">
             CAPO CLICKS
             <span className="block font-mono text-[9px] tracking-[0.3em] text-muted font-normal mt-0.5">
@@ -29,6 +25,7 @@ export default function Nav() {
           <Link href="/frames" className="hover:text-goldLight transition">Frames</Link>
           <Link href="/collage-frames" className="hover:text-goldLight transition">Collage Frames</Link>
           <Link href="/gallery" className="hover:text-goldLight transition">Gallery</Link>
+          <Link href="/about" className="hover:text-goldLight transition">About</Link>
           <Link href="/track" className="hover:text-goldLight transition">Track Order</Link>
           <Link href="/contact" className="hover:text-goldLight transition">Contact</Link>
         </div>
