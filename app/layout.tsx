@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import TaglineMarquee from "@/components/TaglineMarquee";
 import WhatsappFab from "@/components/WhatsappFab";
 import { CartProvider } from "@/components/CartProvider";
+import Aurora from "@/components/Aurora";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -67,12 +69,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="font-body">
         <LocalBusinessJsonLd />
-        <CartProvider>
-          <Nav />
-          <main>{children}</main>
-          <Footer />
-          <WhatsappFab />
-        </CartProvider>
+        <Aurora colorStops={["#8a6d1a", "#e8cf7a", "#c9a227"]} amplitude={1.0} blend={0.6} speed={0.4} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <CartProvider>
+            <Nav />
+            <main>{children}</main>
+            <TaglineMarquee />
+            <Footer />
+            <WhatsappFab />
+          </CartProvider>
+        </div>
       </body>
     </html>
   );

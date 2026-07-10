@@ -19,8 +19,8 @@ const config: Config = {
         line: "rgba(201,162,39,0.28)"
       },
       fontFamily: {
-        display: ["Cinzel", "serif"],
-        body: ["Inter", "sans-serif"],
+        display: ["EB Garamond", "serif"],
+        body: ["EB Garamond", "serif"],
         mono: ["IBM Plex Mono", "monospace"]
       }
     }

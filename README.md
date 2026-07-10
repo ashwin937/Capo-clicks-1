@@ -30,8 +30,13 @@ take real payment until you add Supabase + Razorpay keys.
    Public (needed so printed photo URLs work) — this is what makes the
    photo upload on the Frames and Collage Frames pages actually store the
    image instead of just recording the file name.
-4. Copy your Project URL, anon key, and service role key into `.env.local`.
-5. Restart the dev server.
+4. Also create a bucket named `site-content` (private is fine — it's only
+   ever read/written through server routes using the service key, never
+   fetched directly by the browser). This stores the homepage offer banner
+   and footer tagline strip as a single JSON file — no database table
+   involved, so `supabase/schema.sql` doesn't need to change for this.
+5. Copy your Project URL, anon key, and service role key into `.env.local`.
+6. Restart the dev server.
 
 Order tracking, order creation, image uploads, and the admin dashboard will
 now read/write real data.

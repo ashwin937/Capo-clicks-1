@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import type { SiteContent } from "@/lib/siteContent";
 
 type FrameSize = { id: string; label: string; price: number };
 type Package = { id: string; name: string; price: number; badge?: string; includes: string[] };
@@ -15,7 +17,7 @@ function slugify(s: string) {
 }
 
 export default function AdminEditor({ supabaseConfigured }: { supabaseConfigured: boolean }) {
-  const [tab, setTab] = useState<"frames" | "packages" | "services" | "gallery">("frames");
+  const [tab, setTab] = useState<"frames" | "packages" | "services" | "gallery" | "content">("frames");
 
   return (
     <div className="mt-16">
@@ -32,7 +34,8 @@ export default function AdminEditor({ supabaseConfigured }: { supabaseConfigured
           { id: "frames", label: "Frame Sizes" },
           { id: "packages", label: "Packages" },
           { id: "services", label: "Quote Services" },
-          { id: "gallery", label: "Gallery" }
+          { id: "gallery", label: "Gallery" },
+          { id: "content", label: "Site Content" }
         ].map((t) => (
           <button
             key={t.id}
@@ -50,6 +53,7 @@ export default function AdminEditor({ supabaseConfigured }: { supabaseConfigured
       {tab === "packages" && <PackagesEditor supabaseConfigured={supabaseConfigured} />}
       {tab === "services" && <QuoteServicesEditor supabaseConfigured={supabaseConfigured} />}
       {tab === "gallery" && <GalleryEditor supabaseConfigured={supabaseConfigured} />}
+      {tab === "content" && <SiteContentEditor supabaseConfigured={supabaseConfigured} />}
     </div>
   );
 }
@@ -496,8 +500,9 @@ function GalleryEditor({ supabaseConfigured }: { supabaseConfigured: boolean }) 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {items.map((item) => (
             <div key={item.id} className="border border-line relative group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={item.image_url} alt={item.title} className="w-full aspect-[3/4] object-cover" />
+              <div className="relative w-full aspect-[3/4]">
+                <Image src={item.image_url} alt={item.title} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" />
+              </div>
               <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex flex-col justify-between p-2">
                 <span className="text-[10px] text-goldLight uppercase">{item.category}</span>
                 <div className="flex justify-between items-end">
@@ -509,6 +514,112 @@ function GalleryEditor({ supabaseConfigured }: { supabaseConfigured: boolean }) 
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function SiteContentEditor({ supabaseConfigured }: { supabaseConfigured: boolean }) {
+  const [content, setContent] = useState<SiteContent | null>(null);
+  const [taglinesText, setTaglinesText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState("");
+  const [statusError, setStatusError] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    const res = await fetch("/api/site-content");
+    const data = await res.json();
+    setContent(data.content);
+    setTaglinesText((data.content?.taglines || []).join("\n"));
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function save() {
+    if (!content) return;
+    setSaving(true);
+    setStatus("");
+    const payload: SiteContent = {
+      offer: content.offer,
+      taglines: taglinesText
+        .split("\n")
+        .map((t) => t.trim())
+        .filter(Boolean)
+    };
+    const res = await fetch("/api/site-content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    setSaving(false);
+    if (!res.ok) {
+      setStatusError(true);
+      setStatus(data.error || "Save failed");
+    } else {
+      setStatusError(false);
+      setStatus("Saved — live on the site now.");
+      setContent(data.content);
+    }
+  }
+
+  if (loading || !content) return <p className="text-sm text-muted">Loading...</p>;
+
+  return (
+    <div className="space-y-8">
+      <StatusMsg msg={status} error={statusError} />
+      {!supabaseConfigured && (
+        <p className="text-sm text-muted italic">
+          Supabase isn't connected, so this is showing built-in defaults and can't save yet. Connect Supabase (see README) first.
+        </p>
+      )}
+
+      <div className="card p-5">
+        <p className="text-xs uppercase tracking-wide text-muted mb-4">
+          Offer banner — shown above the portfolio section on the homepage
+        </p>
+        <label className="flex items-center gap-2 mb-4 text-sm">
+          <input
+            type="checkbox"
+            checked={content.offer.enabled}
+            onChange={(e) => setContent({ ...content, offer: { ...content.offer, enabled: e.target.checked } })}
+          />
+          Show the offer banner
+        </label>
+        <input
+          value={content.offer.label}
+          onChange={(e) => setContent({ ...content, offer: { ...content.offer, label: e.target.value } })}
+          placeholder="Small label, e.g. Limited Time"
+          className="w-full bg-black border border-line px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-gold mb-3"
+        />
+        <input
+          value={content.offer.text}
+          onChange={(e) => setContent({ ...content, offer: { ...content.offer, text: e.target.value } })}
+          placeholder="Offer text, e.g. Flat 15% off all collage frame orders this month"
+          className="w-full bg-black border border-line px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-gold"
+        />
+      </div>
+
+      <div className="card p-5">
+        <p className="text-xs uppercase tracking-wide text-muted mb-4">
+          Footer tagline strip — scrolls above the footer on every page, one line per entry
+        </p>
+        <textarea
+          value={taglinesText}
+          onChange={(e) => setTaglinesText(e.target.value)}
+          rows={6}
+          placeholder={"Every Frame Tells a Story\nCoimbatore's Trusted Studio\nMoments Deserve a Frame"}
+          className="w-full bg-black border border-line px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-gold font-mono"
+        />
+      </div>
+
+      <button onClick={save} disabled={!supabaseConfigured || saving} className="btn btn-solid !text-xs disabled:opacity-40">
+        {saving ? "Saving..." : "Save Site Content"}
+      </button>
     </div>
   );
 }

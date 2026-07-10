@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { buildGalleryAlt } from "@/lib/seo";
 
-type GalleryItem = { title: string; category: string; image_url?: string };
+type GalleryItem = { id?: string; title: string; category: string; image_url?: string };
 
 const placeholderItems: GalleryItem[] = [
   { title: "Wedding — Priya & Arjun", category: "Wedding" },
@@ -17,6 +19,39 @@ const placeholderItems: GalleryItem[] = [
 ];
 
 const PREVIEW_COUNT = 8;
+
+function Tile({ item, hidden }: { item: GalleryItem; hidden?: boolean }) {
+  const alt = buildGalleryAlt(item.title, item.category);
+  const inner = (
+    <div
+      aria-hidden={hidden || undefined}
+      className="photo-curved w-[220px] md:w-[240px] aspect-[3/4] border border-line flex items-end p-3.5 bg-gradient-to-br from-panel2 to-black relative flex-shrink-0 mr-3"
+    >
+      {item.image_url && (
+        <Image
+          src={item.image_url}
+          alt={hidden ? "" : alt}
+          fill
+          sizes="240px"
+          className="object-cover"
+        />
+      )}
+      <span className="font-mono text-[11px] tracking-wide text-goldLight uppercase relative z-10 bg-black/40 px-1.5 py-0.5 rounded-sm">
+        {item.category}
+      </span>
+    </div>
+  );
+
+  // Only real Supabase items (with an id) get a real, crawlable detail page.
+  if (item.id && !hidden) {
+    return (
+      <Link href={`/gallery/${item.id}`} aria-label={alt} className="block flex-shrink-0">
+        {inner}
+      </Link>
+    );
+  }
+  return inner;
+}
 
 export default function FeaturedGallery() {
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -48,21 +83,18 @@ export default function FeaturedGallery() {
       {loading ? (
         <p className="text-center text-sm text-muted">Loading...</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {items.map((item, i) => (
-            <div
-              key={item.image_url || item.title + i}
-              className="aspect-[3/4] border border-line flex items-end p-3.5 bg-gradient-to-br from-panel2 to-black overflow-hidden relative"
-            >
-              {item.image_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.image_url} alt={item.title} className="absolute inset-0 w-full h-full object-cover" />
-              )}
-              <span className="font-mono text-[11px] tracking-wide text-goldLight uppercase relative z-10 bg-black/40 px-1.5 py-0.5 rounded-sm">
-                {item.category}
-              </span>
-            </div>
-          ))}
+        <div className="marquee-outer" style={{ ["--marquee-duration" as any]: "34s" }}>
+          <div className="marquee-track">
+            {items.map((item, i) => (
+              <Tile key={(item.id || item.image_url || item.title) + i} item={item} />
+            ))}
+            {/* Duplicate set purely for the seamless scroll loop — hidden from
+                screen readers and search engines so the real content isn't
+                indexed/announced twice. */}
+            {items.map((item, i) => (
+              <Tile key={"dup-" + (item.id || item.image_url || item.title) + i} item={item} hidden />
+            ))}
+          </div>
         </div>
       )}
 

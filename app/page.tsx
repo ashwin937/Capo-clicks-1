@@ -1,5 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import FeaturedGallery from "@/components/FeaturedGallery";
+import OfferBanner from "@/components/OfferBanner";
+
+export const metadata: Metadata = {
+  description:
+    "Capo Clicks Photography — wedding, baby shoot, birthday & event photography plus custom photo framing and collage frames in Coimbatore, Tamil Nadu. Capturing Moments. Creating Memories.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Capo Clicks Photography — Coimbatore",
+    description:
+      "Wedding, baby shoot, birthday & event photography plus custom photo framing in Coimbatore, Tamil Nadu.",
+    url: "/",
+    type: "website"
+  }
+};
 
 const services = [
   "Wedding Photography",
@@ -24,9 +39,14 @@ export default function HomePage() {
         <p className="text-muted max-w-md mx-auto mb-8">
           Weddings, portraits, baby shoots and cinematic reels — printed, framed, and delivered by Capo Clicks.
         </p>
-        <div className="flex gap-4 justify-center flex-wrap">
-          <Link href="/booking" className="btn btn-solid">Book a Shoot</Link>
-          <Link href="/frames" className="btn btn-outline">Order a Frame</Link>
+        <div className="flex gap-8 justify-center flex-wrap items-center">
+          <Link href="/booking" className="btn-signature">
+            Book a Shoot
+            <svg viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M2,8 C40,2 70,12 100,6 C130,1 160,10 198,5" />
+            </svg>
+          </Link>
+          <Link href="/frames" className="btn-underline">Order a Frame</Link>
         </div>
       </section>
 
@@ -34,6 +54,7 @@ export default function HomePage() {
         &ldquo; Every Picture Tells a Story &rdquo;
       </div>
 
+      <OfferBanner />
       <FeaturedGallery />
 
       <section className="max-w-6xl mx-auto px-6 py-20">
