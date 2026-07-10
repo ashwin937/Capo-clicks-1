@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getPackages, getQuoteServices } from "@/lib/publicData";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Photography Services & Packages — Capo Clicks, Coimbatore",
+  description:
+    "Wedding photography, birthday & event coverage, outdoor shoots, cinematic reels, album design, and photo editing packages from Capo Clicks Photography, Coimbatore.",
+  alternates: { canonical: "/services" },
+  openGraph: {
+    title: "Photography Services & Packages | Capo Clicks",
+    description: "Wedding, birthday, event, and outdoor photography packages plus editing and album design services.",
+    url: "/services",
+    type: "website"
+  }
+};
 
 export default async function ServicesPage() {
   const [packages, quoteServices] = await Promise.all([getPackages(), getQuoteServices()]);

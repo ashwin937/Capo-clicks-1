@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import FrameLedger from "@/components/FrameLedger";
 import { getFrameSizes } from "@/lib/publicData";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Custom Photo Frames — Order Online, Coimbatore",
+  description:
+    "Order custom photo frames online in every size from 6x4 to 36x60 inches, with pickup or delivery in Coimbatore. Upload your photo and get it printed and framed.",
+  alternates: { canonical: "/frames" },
+  openGraph: {
+    title: "Custom Photo Frames | Capo Clicks",
+    description: "Order custom-printed photo frames in any size, with pickup or delivery in Coimbatore.",
+    url: "/frames",
+    type: "website"
+  }
+};
 
 export default async function FramesPage() {
   const sizes = await getFrameSizes();

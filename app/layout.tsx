@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import TaglineMarquee from "@/components/TaglineMarquee";
 import WhatsappFab from "@/components/WhatsappFab";
 import { CartProvider } from "@/components/CartProvider";
-import Aurora from "@/components/Aurora";
+import Aurora from "../components/Aurora";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 

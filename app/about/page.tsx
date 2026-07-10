@@ -1,3 +1,18 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us — Capo Clicks Photography, Coimbatore",
+  description:
+    "Learn about Capo Clicks Photography, a Coimbatore-based studio specializing in weddings, baby shoots, events, and custom photo framing.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About Capo Clicks Photography",
+    description: "A Coimbatore-based photography studio built around one idea: every picture tells a story worth keeping.",
+    url: "/about",
+    type: "website"
+  }
+};
+
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-20 text-center">
